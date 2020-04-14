@@ -9,9 +9,9 @@ const router: Router = Router();
 router.get('/', async (req: Request, res: Response) => {
     const items = await FeedItem.findAndCountAll({order: [['id', 'DESC']]});
     items.rows.map((item) => {
-            if(item.url) {
-                item.url = AWS.getGetSignedUrl(item.url);
-            }
+        if(item.url) {
+            item.url = AWS.getGetSignedUrl(item.url);
+        }
     });
     res.send(items);
 });
@@ -19,6 +19,11 @@ router.get('/', async (req: Request, res: Response) => {
 router.get('/:id', async (req: Request, res: Response) => {
     let { id } = req.params;
     const item = await FeedItem.findByPk(id);
+    
+    if(item.url) {
+        item.url = AWS.getGetSignedUrl(item.url);
+    }
+
     res.send(item);
 });
 
